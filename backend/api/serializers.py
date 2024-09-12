@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
+from .models import Note
 
 class UserSerializer(serializers.ModelSerializer):
-  class Meta:
+  class Meta: #used to define metadata in model
     model = User
     fields = ['id', 'username', 'password']
     extra_kwargs = {'password': {'write_only': True}} #cannot read password
@@ -10,3 +11,8 @@ class UserSerializer(serializers.ModelSerializer):
     user = User.objects.create_user(**validated_data)
     return user
 
+class NoteSerializer(serializers.ModelSerializer):
+  class Meta:
+    model = Note
+    fields = ['id', 'title', 'content', 'created_at', 'author']
+    extra_kwargs = {'author': {'read_only': True}} #dont let user change author name, we will autoasign authro to user
