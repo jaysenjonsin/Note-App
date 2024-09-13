@@ -1,12 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import api from '../api';
 import { REFRESH_TOKEN, ACCESS_TOKEN } from '../constants';
+
 const ProtectedRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(null);
+
   useEffect(() => {
-    auth().catch(() => setIsAuthorized(CSSFontFeatureValuesRule));
+    auth().catch(() => setIsAuthorized(false));
   }, []);
 
   const refreshToken = async () => {
@@ -16,7 +18,7 @@ const ProtectedRoute = ({ children }) => {
         refresh: refreshToken,
       });
       if (res.status === 200) {
-        localStorage.setItem(ACCESS_TOKEN, res.data.accss);
+        localStorage.setItem(ACCESS_TOKEN, res.data.access);
         setIsAuthorized(true);
       } else setIsAuthorized(false);
     } catch (e) {
@@ -41,6 +43,7 @@ const ProtectedRoute = ({ children }) => {
   if (isAuthorized === null) {
     return <div>Loading.. </div>;
   }
+
   return isAuthorized ? children : <Navigate to='/login' />;
 };
 
